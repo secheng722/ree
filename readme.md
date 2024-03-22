@@ -37,3 +37,39 @@
 // HandlerFunc defines the request handler used by gee
 type HandlerFunc func(http.ResponseWriter, *http.Request)
 ```
+
+- 朽木大佬好像是对handler也重写了 Orz
+
+```rust
+
+pub type Handler =
+    fn(req: Request<Incoming>) -> Result<Response<BoxBody<Bytes, hyper::Error>>, hyper::Error>;
+
+```
+
+- 暂时这样定义 并不通用
+
+2. 第二步 整一个结构体 里面放个router的类似的东西
+
+- 想着自己实现一个handler 然后在handler里直接返回service_fn的结果 然后提示hyper中这个结果的结构体是私有的 Orz
+
+```rust
+
+async fn handler(req: Request<hyper::body::Incoming>, engine: &mut Engine) {
+    if let Some(f) = engine.routers.iter().find_map(|(method, path, handler)| {
+        if req.method() == *method && req.uri().path() == path {
+            Some(handler)
+        } else {
+            None
+        }
+    }) {
+        // 就是这里这个f是私有的
+        let f = service_fn(f).await;
+    } else {
+        Ok(Response::builder().status(404).body(empty()).unwrap());
+    };
+}
+
+```
+
+- g 自己实现不了呢 参考朽木大佬吧
