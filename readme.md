@@ -73,3 +73,7 @@ async fn handler(req: Request<hyper::body::Incoming>, engine: &mut Engine) {
 ```
 
 - g 自己实现不了呢 参考朽木大佬吧
+- 发现问题了
+- 初步实现了 day01
+  > [!NOTE]
+  > 主要问题是主要是跨线程方面的问题不熟练
